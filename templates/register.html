@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Аниме Список</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #0d1117; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-box { background: #161b22; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; }
+        h1 { text-align: center; margin-bottom: 20px; color: #58a6ff; }
+        .form-group { margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: white; }
+        .btn { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #2ea043; }
+        .link { text-align: center; margin-top: 15px; }
+        a { color: #58a6ff; text-decoration: none; }
+        .flash { padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+        .error { background: #f85149; }
+        .success { background: #238636; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>🎬 Вход</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form /register="/login" method="POST">
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Логин" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Пароль" required>
+            </div>
+            <button type="submit" class="btn">Войти</button>
+        </form>
+        
+        <div class="link">
+            <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</body>
+</html>
