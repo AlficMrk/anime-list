@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Аниме Список</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #0d1117; color: white; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { background: #161b22; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #238636; color: white; }
+        .btn-danger { background: #f85149; color: white; }
+        .btn-secondary { background: #30363d; color: white; }
+        .anime-card { background: #161b22; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .anime-title { color: #58a6ff; font-size: 1.2em; margin-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        input, textarea { width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px; color: white; }
+        .flash { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #238636; }
+        .error { background: #f85149; }
+        .info { background: #1f6feb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Мой Аниме Список</h1>
+            <div>
+                <span>Привет, {{ session.username }}!</span>
+                <a href="/logout" class="btn btn-danger">Выйти</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div style="background: #161b22; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <h3>➕ Добавить аниме</h3>
+            <form action="/add_anime" method="POST">
+                <div class="form-group">
+                    <input type="text" name="title" placeholder="Название аниме" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="description" placeholder="Описание" rows="3"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="number" name="episodes" placeholder="Эпизоды">
+                    <input type="number" name="duration" placeholder="Длительность (мин)">
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Добавить</button>
+            </form>
+        </div>
+
+        <h2>📺 Ваши аниме ({{ anime_list|length }})</h2>
+        
+        {% if anime_list %}
+            {% for anime in anime_list %}
+            <div class="anime-card">
+                <div class="anime-title">{{ anime.title }}</div>
+                {% if anime.description %}
+                    <p style="color: #8b949e; margin-bottom: 10px;">{{ anime.description }}</p>
+                {% endif %}
+                <div style="display: flex; justify-content: space-between; color: #8b949e; margin-bottom: 10px;">
+                    {% if anime.episodes %}<span>📺 {{ anime.episodes }} эп.</span>{% endif %}
+                    {% if anime.duration %}<span>⏱ {{ anime.duration }} мин</span>{% endif %}
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="background: #238636; padding: 5px 10px; border-radius: 5px;">{{ anime.status }}</span>
+                    <a href="/delete_anime/{{ anime.id }}" class="btn btn-danger" onclick="return confirm('Удалить?')">Удалить</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; padding: 40px; background: #161b22; border-radius: 10px;">
+                <p style="color: #8b949e;">У вас пока нет аниме. Добавьте первое!</p>
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px; color: #8b949e;">
+            <p>Всего времени: {{ (user.total_watch_time / 60)|round(1) }} часов</p>
+        </div>
+    </div>
+</body>
+  </html>
